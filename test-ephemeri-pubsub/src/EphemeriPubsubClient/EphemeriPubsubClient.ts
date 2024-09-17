@@ -13,8 +13,8 @@ import {
 // const baseUrl = "http://localhost:8080";
 // const websocketUrl = "ws://localhost:8080";
 
-const baseUrl = "https://ephemeri-pubsub-1-a4193b4085cc.herokuapp.com";
-const websocketUrl = "wss://ephemeri-pubsub-1-a4193b4085cc.herokuapp.com";
+const baseUrl = "https://ephemeri-pubsub-1-b7f355f72152.herokuapp.com/";
+const websocketUrl = "wss://ephemeri-pubsub-1-b7f355f72152.herokuapp.com/";
 
 export class EphemeriPubsubClient {
   #onMessageHandlers: ((m: PubsubMessage) => void)[] = [];

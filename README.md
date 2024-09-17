@@ -10,9 +10,7 @@ Sign up for a [Heroku](https://heroku.com) account and Create a new app. Name it
 
 **Step 2: Set system public/private keys**
 
-Obtain a public/private key pair using the test-ephemeri-pubsub app.
-
-In the Heroku web console, open the Settings for your project and add two configuration variables: SYSTEM_PUBLIC_KEY and SYSTEM_PRIVATE_KEY.
+In the Heroku web console, open the Settings for your project and add the API_KEY config variable to a random string of your choosing. Make a note of the random string.
 
 **Step 3: Clone and set up this repo**
 
@@ -34,4 +32,4 @@ To deploy the server:
 git push heroku main
 ```
 
-Make a note of the URL where the server is being hosted. For example it might be `https://ephemeri-pubsub-1.herokuapp.com`. This URL along with the proxy secret will allow clients to connect to services.
+Make a note of the URL where the server is being hosted. For example it might be `https://ephemeri-pubsub-1.herokuapp.com`.
