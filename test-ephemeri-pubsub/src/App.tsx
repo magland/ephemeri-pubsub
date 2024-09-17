@@ -11,12 +11,12 @@ type MessagesAction = {
 
 const messagesReducer = (
   state: MessagesState,
-  action: MessagesAction,
+  action: MessagesAction
 ): MessagesState => {
   switch (action.type) {
     case "add": {
       return [...state, action.message].sort(
-        (a, b) => a.timestamp - b.timestamp,
+        (a, b) => a.timestamp - b.timestamp
       );
     }
     default:
@@ -28,22 +28,25 @@ function App() {
   const [messages, messagesDispatch] = useReducer(messagesReducer, []);
   const [client, setClient] = useState<EphemeriPubsubClient | null>(null);
   useEffect(() => {
-    (async () => {
-      const apiKey = prompt("Enter API key") || "";
-      const client = new EphemeriPubsubClient(apiKey);
-      client.onMessage((e: PubsubMessage) => {
-        if (e.type === "message") {
-          messagesDispatch({ type: "add", message: e });
-        }
-      });
-      client.subscribeToChannels(["channel1a"]);
+    let canceled = false;
+    const apiKey = prompt("Enter API key") || "";
+    const client = new EphemeriPubsubClient(apiKey);
+    client.onMessage((e: PubsubMessage) => {
+      if (e.type === "message") {
+        messagesDispatch({ type: "add", message: e });
+      }
+    });
+    client.subscribeToChannels(["channel1a"]).then(() => {
+      if (canceled) {
+        client.close();
+        return;
+      }
       setClient(client);
-      await sleep(1000);
-      client.publish(
-        "channel1a",
-        "Hello channel1a from client1 --- " + Math.random(),
-      );
-    })();
+    });
+    return () => {
+      canceled = true;
+      client.close();
+    };
   }, []);
   return (
     <div>
@@ -80,11 +83,5 @@ function App() {
     </div>
   );
 }
-
-const sleep = (ms: number) => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-};
 
 export default App;

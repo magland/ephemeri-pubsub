@@ -7,21 +7,19 @@ import {
   SubscribeTokenObject,
   isPublishResponse,
   isPubsubMessage,
-  isSubscribeResponse
+  isSubscribeResponse,
 } from "./types";
 
 // const baseUrl = "http://localhost:8080";
 // const websocketUrl = "ws://localhost:8080";
 
-const baseUrl = "https://ephemeri-pubsub-1-b7f355f72152.herokuapp.com/";
-const websocketUrl = "wss://ephemeri-pubsub-1-b7f355f72152.herokuapp.com/";
+const baseUrl = "https://ephemeri-pubsub-1-b7f355f72152.herokuapp.com";
+const websocketUrl = "wss://ephemeri-pubsub-1-b7f355f72152.herokuapp.com";
 
 export class EphemeriPubsubClient {
   #onMessageHandlers: ((m: PubsubMessage) => void)[] = [];
   #websocketConnection: WebSocket | undefined = undefined;
-  constructor(
-    public apiKey: string
-  ) {}
+  constructor(public apiKey: string) {}
   onMessage(callback: (m: PubsubMessage) => void) {
     this.#onMessageHandlers.push(callback);
   }
@@ -65,6 +63,10 @@ export class EphemeriPubsubClient {
       tokenSignature: tokenSignature,
     };
     const onWebsocketMessage = async (wsMessage: any) => {
+      if (!this.#websocketConnection) {
+        console.warn("No websocket connection even though message received");
+        return;
+      }
       try {
         if (typeof wsMessage !== "object") {
           throw new Error("Invalid message, not an object");
@@ -94,6 +96,13 @@ export class EphemeriPubsubClient {
       initialMessage,
       onWebsocketMessage
     );
+  }
+  close() {
+    if (!this.#websocketConnection) {
+      return;
+    }
+    this.#websocketConnection.close();
+    this.#websocketConnection = undefined;
   }
 }
 

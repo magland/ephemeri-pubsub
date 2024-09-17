@@ -7,7 +7,7 @@ import {
   PublishResponse,
   PubsubMessage,
   SubscribeRequest,
-  SubscribeResponse
+  SubscribeResponse,
 } from "./types";
 
 let API_KEY = process.env.API_KEY;
@@ -16,8 +16,7 @@ export const publishHandler = async (
   request: PublishRequest,
   subscriptionManager: SubscriptionManager
 ): Promise<PublishResponse> => {
-  const { publishToken, tokenSignature, messageJson } =
-    request;
+  const { publishToken, tokenSignature, messageJson } = request;
   const tokenSignatureToVerify = sha1(publishToken + API_KEY);
   if (tokenSignature !== tokenSignatureToVerify) {
     throw new Error("Invalid token signature");
@@ -26,12 +25,7 @@ export const publishHandler = async (
   if (!isPublishTokenObject(publishTokenObject)) {
     throw new Error("Invalid publish token");
   }
-  const {
-    timestamp,
-    channel,
-    messageSize,
-    messageSha1
-  } = publishTokenObject;
+  const { timestamp, channel, messageSize, messageSha1 } = publishTokenObject;
   const timestampDifference = Math.abs(Date.now() - timestamp);
   if (timestampDifference > 60 * 1000) {
     throw new Error("Invalid timestamp for publish token");
@@ -48,7 +42,7 @@ export const publishHandler = async (
     type: "message",
     channel,
     timestamp: timestamp0,
-    messageJson
+    messageJson,
   };
   subscriptionManager.publishMessage(channel, m);
   const resp: PublishResponse = { type: "publishResponse" };
@@ -58,8 +52,7 @@ export const publishHandler = async (
 export const subscribeHandler = async (
   request: SubscribeRequest
 ): Promise<SubscribeResponse> => {
-  const { subscribeToken, tokenSignature, channels } =
-    request;
+  const { subscribeToken, tokenSignature, channels } = request;
   const tokenSignatureToVerify = sha1(subscribeToken + API_KEY);
   if (tokenSignature !== tokenSignatureToVerify) {
     throw new Error("Invalid token signature");
@@ -68,10 +61,7 @@ export const subscribeHandler = async (
   if (!isSubscribeTokenObject(subscribeTokenObject)) {
     throw new Error("Invalid subscribe token");
   }
-  const {
-    timestamp,
-    channels: channelsInToken,
-  } = subscribeTokenObject;
+  const { timestamp, channels: channelsInToken } = subscribeTokenObject;
   if (!stringArraysMatch(channels, channelsInToken)) {
     throw new Error("Channels do not match subscribe token");
   }

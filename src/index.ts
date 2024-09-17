@@ -1,10 +1,7 @@
 import cors from "cors";
 import express from "express";
 import WebSocket, { WebSocketServer } from "ws";
-import {
-  publishHandler,
-  subscribeHandler,
-} from "./requestHandlers";
+import { publishHandler, subscribeHandler } from "./requestHandlers";
 import { Subscription, SubscriptionManager } from "./SubscriptionManager";
 import {
   isPublishRequest,
@@ -15,13 +12,13 @@ import {
 const app = express();
 
 app.use(
-    cors({
-        origin: [
-            "http://localhost:5173",
-            "http://localhost:3000",
-            "https://neurosift.app"
-        ],
-    })
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://neurosift.app",
+    ],
+  })
 );
 
 app.use(express.json());
