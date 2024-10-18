@@ -52,9 +52,11 @@ const wss = new WebSocketServer({ server });
 console.log("Websocket server started");
 
 wss.on("connection", (ws) => {
-  console.log("New connection");
+  console.log("New connection 1");
   let receivedFirstMessage = false;
   let connectionInitialized = false;
+
+  console.log("New connection 2");
 
   const subscriptionId = createRandomSubscriptionId();
   const sendWebsocketMessageToClient = (message: any) => {
@@ -62,10 +64,13 @@ wss.on("connection", (ws) => {
       ws.send(JSON.stringify(message));
     }
   };
+  console.log("New connection 2.5");
   const subscription = new Subscription(
     subscriptionId,
     sendWebsocketMessageToClient
   );
+
+  console.log("New connection 3");
 
   const timeAllowedBeforeFirstMessageMsec = 2000;
   setTimeout(() => {
@@ -77,6 +82,8 @@ wss.on("connection", (ws) => {
       }
     }
   }, timeAllowedBeforeFirstMessageMsec);
+
+  console.log("New connection 4");
 
   ws.on("message", async (messageBuf) => {
     console.log("Received message");
@@ -123,10 +130,15 @@ wss.on("connection", (ws) => {
     }
   });
 
+  console.log("New connection 5");
+
   ws.on("close", () => {
+    console.log("on close");
     subscription.close();
     subscriptionManager.removeSubscription(subscription);
   });
+
+  console.log("New connection 6");
 });
 
 const createRandomSubscriptionId = (): string => {
