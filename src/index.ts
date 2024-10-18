@@ -49,7 +49,10 @@ const server = app.listen(PORT, () => {
 
 const wss = new WebSocketServer({ server });
 
+console.log("Websocket server started");
+
 wss.on("connection", (ws) => {
+  console.log("New connection");
   let receivedFirstMessage = false;
   let connectionInitialized = false;
 
@@ -76,6 +79,7 @@ wss.on("connection", (ws) => {
   }, timeAllowedBeforeFirstMessageMsec);
 
   ws.on("message", async (messageBuf) => {
+    console.log("Received message", messageBuf.toString());
     const msg = JSON.parse(messageBuf.toString());
     if (!receivedFirstMessage) {
       receivedFirstMessage = true;
